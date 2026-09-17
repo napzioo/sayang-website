@@ -6,9 +6,7 @@
 
   <title>Kamu Sayang Aku Gaa??</title>
 
-  <!-- =====================================================
-       GOOGLE FONTS
-       ===================================================== -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -21,7 +19,7 @@
 
     /* =====================================================
        RESET
-       ===================================================== */
+    ===================================================== */
 
     * {
       margin: 0;
@@ -43,18 +41,18 @@
     button {
       border: none;
       outline: none;
-      cursor: pointer;
       font-family: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
 
     /* =====================================================
-       STATE 1 — QUESTION
-       ===================================================== */
+       QUESTION STATE
+    ===================================================== */
 
     #questionState {
-      position: relative;
 
       width: 100%;
       min-height: 100vh;
@@ -73,31 +71,37 @@
         );
 
       transition:
-        opacity 0.35s ease;
+        opacity .45s ease,
+        transform .45s ease;
+    }
+
+    #questionState.hide {
+
+      opacity: 0;
+
+      transform: scale(.96);
+
+      pointer-events: none;
     }
 
 
     /* =====================================================
-       QUESTION CARD
-       ===================================================== */
+       CARD
+    ===================================================== */
 
     .card {
+
       position: relative;
 
       width: 100%;
       max-width: 320px;
 
-      /*
-       * Padding bawah dibuat cukup besar
-       * supaya tombol Gakk bisa turun.
-       */
-
       padding:
-        32px
-        24px
-        125px;
+        30px
+        20px
+        120px;
 
-      background: #ffffff;
+      background: white;
 
       border-radius: 24px;
 
@@ -105,62 +109,54 @@
 
       overflow: visible;
 
-      z-index: 10;
-
       box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.12);
+        0 15px 40px rgba(0, 0, 0, .12);
     }
 
 
     /* =====================================================
        CHARACTER
-       ===================================================== */
+    ===================================================== */
 
     .character {
+
       width: 105px;
       height: 105px;
 
       margin:
-        0 auto 18px;
+        0 auto
+        18px;
 
       display: flex;
-      align-items: center;
-      justify-content: center;
 
-      background: #fff1f6;
+      justify-content: center;
+      align-items: center;
 
       border-radius: 50%;
 
+      background:
+        #fff1f6;
+
+      font-size: 56px;
+
       overflow: hidden;
-
-      font-size: 58px;
-    }
-
-    .character img,
-    .character video {
-      width: 100%;
-      height: 100%;
-
-      display: block;
-
-      object-fit: cover;
     }
 
 
     /* =====================================================
        QUESTION TITLE
-       ===================================================== */
+    ===================================================== */
 
     #questionTitle {
+
       min-height: 75px;
 
       display: flex;
-      align-items: center;
+
       justify-content: center;
+      align-items: center;
 
       margin-bottom: 22px;
-
-      color: #333333;
 
       font-family: "Caveat", cursive;
 
@@ -168,24 +164,33 @@
 
       line-height: 1.15;
 
+      color: #333;
+
+      opacity: 1;
+
+      transform:
+        translateY(0);
+
       transition:
-        opacity 0.2s ease,
-        transform 0.2s ease;
+        opacity .2s ease,
+        transform .2s ease;
     }
 
     #questionTitle.fade {
+
       opacity: 0;
 
       transform:
-        translateY(5px);
+        translateY(8px);
     }
 
 
     /* =====================================================
        BUTTON CONTAINER
-       ===================================================== */
+    ===================================================== */
 
     .buttons {
+
       width: 100%;
 
       display: flex;
@@ -204,9 +209,10 @@
 
     /* =====================================================
        YES BUTTON
-       ===================================================== */
+    ===================================================== */
 
     #yesButton {
+
       position: relative;
 
       width: 160px;
@@ -214,15 +220,12 @@
 
       flex-shrink: 0;
 
-      padding:
-        10px
-        12px;
-
       border-radius: 999px;
 
-      background: #2ecc71;
+      background:
+        #2ecc71;
 
-      color: #ffffff;
+      color: white;
 
       font-size: 15px;
 
@@ -230,29 +233,36 @@
 
       z-index: 100;
 
+      transform:
+        scale(1);
+
       box-shadow:
         0 8px 20px
-        rgba(46, 204, 113, 0.25);
+        rgba(46, 204, 113, .25);
 
       transition:
-        width 0.4s ease,
-        height 0.4s ease,
-        border-radius 0.4s ease,
-        font-size 0.4s ease,
-        transform 0.2s ease;
-    }
+        transform .65s
+        cubic-bezier(.22, 1, .36, 1),
 
-    #yesButton:active {
-      transform:
-        scale(0.97);
+        width .65s
+        cubic-bezier(.22, 1, .36, 1),
+
+        height .65s
+        cubic-bezier(.22, 1, .36, 1),
+
+        border-radius .65s
+        cubic-bezier(.22, 1, .36, 1),
+
+        font-size .65s ease;
     }
 
 
     /* =====================================================
        NO BUTTON
-       ===================================================== */
+    ===================================================== */
 
     #noButton {
+
       position: relative;
 
       width: 100px;
@@ -260,15 +270,12 @@
 
       flex-shrink: 0;
 
-      padding:
-        10px
-        12px;
-
       border-radius: 999px;
 
-      background: #e74c3c;
+      background:
+        #e74c3c;
 
-      color: #ffffff;
+      color: white;
 
       font-size: 15px;
 
@@ -282,75 +289,124 @@
 
       opacity: 1;
 
-      /*
-       * Semua perubahan:
-       * turun + mengecil + opacity.
-       */
-
       transition:
-        all 0.35s ease;
+        transform .5s
+        cubic-bezier(.22, 1, .36, 1),
+
+        opacity .5s ease;
+    }
+
+
+    /* =====================================================
+       FULLSCREEN YES
+    ===================================================== */
+
+    #yesButton.fullscreen {
+
+      position: fixed;
+
+      left: 0;
+      top: 0;
+
+      width: 100vw;
+      height: 100vh;
+
+      border-radius: 0;
+
+      z-index: 9999;
+
+      transform:
+        scale(1);
+
+      font-size:
+        clamp(
+          32px,
+          8vw,
+          70px
+        );
     }
 
 
     /* =====================================================
        TRANSITION STATE
-       ===================================================== */
+    ===================================================== */
 
     #transitionState {
+
       position: fixed;
 
       inset: 0;
 
-      display: none;
+      display: flex;
 
-      align-items: center;
       justify-content: center;
+      align-items: center;
 
-      background: #2ecc71;
+      background:
+        #2ecc71;
 
-      z-index: 999;
+      z-index: 9998;
 
       opacity: 0;
 
+      visibility: hidden;
+
       transition:
-        opacity 0.3s ease;
+        opacity .35s ease;
     }
 
     #transitionState.show {
-      display: flex;
 
       opacity: 1;
+
+      visibility: visible;
     }
 
+
     .transitionText {
+
       padding: 20px;
 
-      color: #ffffff;
+      color: white;
 
       text-align: center;
 
-      font-family: "Caveat", cursive;
+      font-family:
+        "Caveat",
+        cursive;
 
       font-size:
-        clamp(42px, 12vw, 90px);
+        clamp(
+          42px,
+          12vw,
+          90px
+        );
     }
 
 
     /* =====================================================
-       STATE 3 — RESULT
-       ===================================================== */
+       RESULT STATE
+    ===================================================== */
 
     #resultState {
+
       position: fixed;
 
       inset: 0;
 
-      display: none;
+      width: 100%;
+      height: 100%;
 
-      align-items: center;
+      display: flex;
+
       justify-content: center;
 
-      padding: 20px;
+      align-items: flex-start;
+
+      padding:
+        25px
+        15px
+        40px;
 
       background:
         linear-gradient(
@@ -362,441 +418,286 @@
       overflow-y: auto;
       overflow-x: hidden;
 
-      z-index: 1000;
+      z-index: 10000;
+
+      opacity: 0;
+
+      visibility: hidden;
+
+      transition:
+        opacity .5s ease;
     }
 
     #resultState.show {
-      display: flex;
+
+      opacity: 1;
+
+      visibility: visible;
     }
 
 
     /* =====================================================
        RESULT CONTENT
-       ===================================================== */
+    ===================================================== */
 
     .resultContent {
+
       position: relative;
 
+      z-index: 10;
+
       width: 100%;
+
       max-width: 390px;
 
-      padding:
-        30px
-        10px
-        40px;
+      margin: 0 auto;
 
       text-align: center;
+    }
+
+
+    /* =====================================================
+       RESULT TITLE
+    ===================================================== */
+
+    #resultTitle {
+
+      margin-bottom: 10px;
+
+      color: white;
+
+      font-family:
+        "Caveat",
+        cursive;
+
+      font-size:
+        clamp(
+          42px,
+          12vw,
+          64px
+        );
+
+      line-height: 1.05;
+
+      text-shadow:
+        0 5px 15px
+        rgba(0, 0, 0, .1);
+
+      animation:
+        resultTitleIn
+        .7s
+        cubic-bezier(.22, 1, .36, 1)
+        both;
+    }
+
+
+    @keyframes resultTitleIn {
+
+      from {
+
+        opacity: 0;
+
+        transform:
+          translateY(20px);
+      }
+
+      to {
+
+        opacity: 1;
+
+        transform:
+          translateY(0);
+      }
+    }
+
+
+    /* =====================================================
+       RESULT SUBTITLE
+    ===================================================== */
+
+    #resultSubtitle {
+
+      margin-bottom: 22px;
+
+      color: white;
+
+      font-size: 16px;
+
+      font-weight: 600;
+
+      line-height: 1.5;
+
+      animation:
+        subtitleIn
+        .7s
+        cubic-bezier(.22, 1, .36, 1)
+        .15s
+        both;
+    }
+
+
+    @keyframes subtitleIn {
+
+      from {
+
+        opacity: 0;
+
+        transform:
+          translateY(15px);
+      }
+
+      to {
+
+        opacity: 1;
+
+        transform:
+          translateY(0);
+      }
+    }
+
+
+    /* =====================================================
+       GALLERY
+    ===================================================== */
+
+    #gallery {
+
+      width: 100%;
+
+      display: flex;
+
+      justify-content: center;
+
+      align-items: center;
+
+      margin: 0 auto;
+
+      position: relative;
 
       z-index: 10;
     }
 
 
     /* =====================================================
-       RESULT TITLE
-       ===================================================== */
-
-    #resultTitle {
-      margin-bottom: 18px;
-
-      color: #ffffff;
-
-      font-family: "Caveat", cursive;
-
-      font-size:
-        clamp(42px, 12vw, 64px);
-
-      line-height: 1.05;
-
-      text-shadow:
-        0 5px 15px
-        rgba(0, 0, 0, 0.1);
-    }
-
-
-    /* =====================================================
-       RESULT MEDIA
-       ===================================================== */
-
-    .resultCharacter {
-      width: 125px;
-      height: 125px;
-
-      margin:
-        0 auto 16px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      background:
-        rgba(255, 255, 255, 0.95);
-
-      border-radius: 50%;
-
-      overflow: hidden;
-
-      font-size: 68px;
-
-      box-shadow:
-        0 10px 30px
-        rgba(0, 0, 0, 0.1);
-    }
-
-    .resultCharacter img,
-    .resultCharacter video {
-      width: 100%;
-      height: 100%;
-
-      object-fit: cover;
-    }
-
-
-    /* =====================================================
-       RESULT SUBTITLE
-       ===================================================== */
-
-    #resultSubtitle {
-      margin-bottom: 22px;
-
-      color: #ffffff;
-
-      font-size: 17px;
-
-      font-weight: 600;
-
-      line-height: 1.5;
-
-      text-shadow:
-        0 3px 10px
-        rgba(0, 0, 0, 0.08);
-    }
-
-
-    /* =====================================================
-       GALLERY WRAPPER
-       ===================================================== */
-
-    #gallery {
-      width: 100%;
-
-      max-width: 100%;
-
-      margin:
-        0 auto;
-
-      padding:
-        12px 4px 20px;
-
-      overflow: visible;
-    }
-
-
-    /* =====================================================
-       GALLERY POLAROID CONTAINER
-       ===================================================== */
+       4 PHOTO GRID
+    ===================================================== */
 
     .gallery-polaroid {
+
       width: 100%;
 
-      min-height: 180px;
+      max-width: 285px;
 
-      display: flex;
+      margin: 0 auto;
 
-      justify-content: center;
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      justify-items: center;
 
       align-items: center;
 
-      flex-wrap: wrap;
-
-      gap: 0;
+      gap: 16px 8px;
 
       padding:
-        10px 0 25px;
-
-      overflow: visible;
+        10px 0
+        30px;
     }
 
 
     /* =====================================================
-       POLAROID PHOTO
-       ===================================================== */
+       POLAROID
+    ===================================================== */
 
     .polaroid {
+
+      --rotation: 0deg;
+
       position: relative;
 
-      width: 112px;
+      width: 120px;
 
       padding:
-        8px
-        8px
-        23px
-        8px;
+        7px
+        7px
+        21px;
 
-      background: #ffffff;
+      background:
+        white;
 
       border-radius: 4px;
 
       box-shadow:
         0 8px 20px
-        rgba(0, 0, 0, 0.18);
+        rgba(0, 0, 0, .18);
 
       opacity: 0;
 
       transform:
-        translateY(30px)
-        rotate(0deg);
-
-      transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
+        translateY(35px)
+        rotate(var(--rotation))
+        scale(.94);
 
       animation:
         polaroidAppear
-        0.55s ease
+        .7s
+        cubic-bezier(.22, 1, .36, 1)
         forwards;
     }
 
 
-    /* =====================================================
-       POLAROID PHOTO IMAGE
-       ===================================================== */
-
     .polaroid img {
-      width: 100%;
-
-      aspect-ratio: 1 / 1.15;
 
       display: block;
 
-      object-fit: cover;
-
-      background: #f4f4f4;
-    }
-
-
-    /* =====================================================
-       PLACEHOLDER FOTO
-       ===================================================== */
-
-    .photoPlaceholder {
       width: 100%;
 
-      aspect-ratio: 1 / 1.15;
+      aspect-ratio:
+        1 / 1.15;
 
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
+      object-fit: cover;
 
       background:
-        linear-gradient(
-          135deg,
-          #ffe1eb,
-          #fff5f8
-        );
-
-      color: #ff8fa3;
-
-      font-size: 30px;
+        #f4f4f4;
     }
 
 
     /* =====================================================
-       POLAROID ROTATIONS
-
-       Masing-masing foto sedikit miring.
-       ===================================================== */
-
-    .polaroid:nth-child(1) {
-      margin-right: -5px;
-
-      transform:
-        translateY(30px)
-        rotate(-8deg);
-    }
-
-    .polaroid:nth-child(2) {
-      margin-left: -4px;
-
-      transform:
-        translateY(30px)
-        rotate(5deg);
-    }
-
-    .polaroid:nth-child(3) {
-      margin-right: -5px;
-
-      transform:
-        translateY(30px)
-        rotate(-3deg);
-    }
-
-    .polaroid:nth-child(4) {
-      margin-left: -4px;
-
-      transform:
-        translateY(30px)
-        rotate(6deg);
-    }
-
-
-    /* =====================================================
-       ANIMASI MUNCUL POLAROID
-       ===================================================== */
+       POLAROID ANIMATION
+    ===================================================== */
 
     @keyframes polaroidAppear {
 
-      0% {
+      from {
+
         opacity: 0;
 
         transform:
-          translateY(30px)
-          rotate(0deg);
+          translateY(35px)
+          rotate(var(--rotation))
+          scale(.94);
       }
 
-      100% {
+      to {
+
         opacity: 1;
+
+        transform:
+          translateY(0)
+          rotate(var(--rotation))
+          scale(1);
       }
     }
 
 
     /* =====================================================
-       HOVER / TAP POLAROID
-       ===================================================== */
-
-    .polaroid:hover {
-      z-index: 20;
-
-      transform:
-        translateY(-8px)
-        scale(1.05)
-        rotate(0deg) !important;
-
-      box-shadow:
-        0 15px 30px
-        rgba(0, 0, 0, 0.22);
-    }
-
-    .polaroid:active {
-      z-index: 20;
-
-      transform:
-        translateY(-8px)
-        scale(1.05)
-        rotate(0deg) !important;
-    }
-
-
-    /* =====================================================
-       CAROUSEL
-       ===================================================== */
-
-    .gallery-carousel {
-      width: 100%;
-
-      display: flex;
-
-      gap: 12px;
-
-      overflow-x: auto;
-
-      overflow-y: hidden;
-
-      padding:
-        10px 8px 14px;
-
-      scroll-snap-type:
-        x mandatory;
-
-      -webkit-overflow-scrolling:
-        touch;
-
-      scrollbar-width: none;
-    }
-
-    .gallery-carousel::-webkit-scrollbar {
-      display: none;
-    }
-
-
-    /* =====================================================
-       CAROUSEL ITEM
-       ===================================================== */
-
-    .carousel-item {
-      flex:
-        0 0 190px;
-
-      aspect-ratio:
-        3 / 4;
-
-      overflow: hidden;
-
-      border-radius: 16px;
-
-      background: #ffffff;
-
-      scroll-snap-align:
-        center;
-
-      box-shadow:
-        0 8px 22px
-        rgba(0, 0, 0, 0.15);
-    }
-
-    .carousel-item img {
-      width: 100%;
-      height: 100%;
-
-      display: block;
-
-      object-fit: cover;
-    }
-
-
-    /* =====================================================
-       CAROUSEL DOTS
-       ===================================================== */
-
-    .galleryDots {
-      display: flex;
-
-      justify-content: center;
-
-      align-items: center;
-
-      gap: 6px;
-
-      margin-top: 4px;
-    }
-
-    .galleryDot {
-      width: 6px;
-      height: 6px;
-
-      border-radius: 50%;
-
-      background:
-        rgba(255, 255, 255, 0.5);
-
-      transition:
-        all 0.2s ease;
-    }
-
-    .galleryDot.active {
-      width: 16px;
-
-      border-radius: 999px;
-
-      background: #ffffff;
-    }
-
-
-    /* =====================================================
-       FALLING HEARTS
-       ===================================================== */
+       HEARTS
+    ===================================================== */
 
     #hearts {
+
       position: fixed;
 
       inset: 0;
@@ -808,16 +709,18 @@
       z-index: 1;
     }
 
+
     .heart {
+
       position: absolute;
 
       top: -60px;
 
-      color: #ffffff;
-
-      pointer-events: none;
+      color: white;
 
       user-select: none;
+
+      pointer-events: none;
 
       animation:
         fallHeart
@@ -826,130 +729,137 @@
     }
 
 
-    /* =====================================================
-       HEART ANIMATION
-       ===================================================== */
-
     @keyframes fallHeart {
 
       0% {
+
         transform:
-          translate3d(0, -60px, 0)
+          translate3d(
+            0,
+            -60px,
+            0
+          )
           rotate(0deg);
       }
 
       25% {
+
         transform:
-          translate3d(20px, 25vh, 0)
+          translate3d(
+            20px,
+            25vh,
+            0
+          )
           rotate(15deg);
       }
 
       50% {
+
         transform:
-          translate3d(-20px, 50vh, 0)
+          translate3d(
+            -20px,
+            50vh,
+            0
+          )
           rotate(-15deg);
       }
 
       75% {
+
         transform:
-          translate3d(20px, 75vh, 0)
+          translate3d(
+            20px,
+            75vh,
+            0
+          )
           rotate(15deg);
       }
 
       100% {
+
         transform:
-          translate3d(-10px, 110vh, 0)
+          translate3d(
+            -10px,
+            110vh,
+            0
+          )
           rotate(-10deg);
       }
     }
 
 
     /* =====================================================
-       MOBILE
-       ===================================================== */
+       SMALL SCREEN
+    ===================================================== */
 
     @media (max-width: 360px) {
 
       .card {
-        padding:
-          28px
-          15px
-          125px;
-      }
 
-      .character {
-        width: 90px;
-        height: 90px;
+        padding-left: 14px;
 
-        font-size: 50px;
+        padding-right: 14px;
       }
 
       #questionTitle {
+
         font-size: 29px;
       }
 
-      .buttons {
-        gap: 8px;
-      }
-
       #yesButton {
-        width: 145px;
 
-        padding:
-          10px 8px;
+        width: 145px;
 
         font-size: 14px;
       }
 
       #noButton {
-        width: 90px;
 
-        padding:
-          10px 8px;
+        width: 90px;
 
         font-size: 14px;
       }
 
-      .polaroid {
-        width: 100px;
+      .gallery-polaroid {
+
+        max-width: 260px;
+
+        gap: 14px 5px;
       }
 
-      .resultContent {
-        padding:
-          20px
-          5px
-          35px;
+      .polaroid {
+
+        width: 108px;
       }
     }
 
 
     /* =====================================================
-       LAYAR YANG PENDEK
-       ===================================================== */
+       VERY SHORT SCREEN
+    ===================================================== */
 
-    @media (max-height: 700px) {
+    @media (max-height: 650px) {
 
-      .resultContent {
+      #resultState {
+
         padding-top: 15px;
       }
 
       #resultTitle {
+
         font-size: 46px;
       }
 
-      .resultCharacter {
-        width: 100px;
-        height: 100px;
-
-        font-size: 55px;
-      }
-
       .gallery-polaroid {
-        padding-bottom: 15px;
+
+        gap: 12px 5px;
+
+        padding-bottom: 20px;
       }
 
       .polaroid {
-        width: 100px;
+
+        width: 105px;
       }
     }
 
@@ -961,14 +871,16 @@
 
 
   <!-- =====================================================
-       STATE 1 — QUESTION
-       ===================================================== -->
+       STATE 1
+  ===================================================== -->
 
   <main id="questionState">
 
     <section class="card">
 
-      <!-- Character -->
+
+      <!-- CHARACTER -->
+
       <div
         id="characterMedia"
         class="character"
@@ -977,16 +889,17 @@
       </div>
 
 
-      <!-- Question -->
+      <!-- QUESTION -->
+
       <h1 id="questionTitle">
         Kamu sayang aku gaa??
       </h1>
 
 
-      <!-- Buttons -->
+      <!-- BUTTONS -->
+
       <div class="buttons">
 
-        <!-- YES -->
         <button
           id="yesButton"
           type="button"
@@ -995,7 +908,6 @@
         </button>
 
 
-        <!-- NO -->
         <button
           id="noButton"
           type="button"
@@ -1011,8 +923,8 @@
 
 
   <!-- =====================================================
-       STATE 2 — TRANSITION
-       ===================================================== -->
+       STATE 2
+  ===================================================== -->
 
   <section
     id="transitionState"
@@ -1027,47 +939,41 @@
 
 
   <!-- =====================================================
-       STATE 3 — RESULT
-       ===================================================== -->
+       STATE 3
+  ===================================================== -->
 
   <section
     id="resultState"
     aria-hidden="true"
   >
 
-    <!-- Falling hearts -->
+
+    <!-- FALLING HEARTS -->
+
     <div id="hearts"></div>
 
 
-    <!-- Result -->
     <div class="resultContent">
 
-      <!-- Result title -->
+
+      <!-- TITLE -->
+
       <h2 id="resultTitle">
         Yeayy! Makasih ya ❤️
       </h2>
 
 
-      <!-- Result media -->
-      <div
-        id="resultMedia"
-        class="resultCharacter"
-      >
-        ❤️
-      </div>
+      <!-- SUBTITLE -->
 
-
-      <!-- Subtitle -->
       <p id="resultSubtitle">
         Aku juga sayang kamu kok!
       </p>
 
 
-      <!-- =================================================
-           GALLERY
-           ================================================= -->
+      <!-- FOUR PHOTOS -->
 
       <div id="gallery"></div>
+
 
     </div>
 
@@ -1076,20 +982,15 @@
 
   <!-- =====================================================
        JAVASCRIPT
-       ===================================================== -->
+  ===================================================== -->
 
   <script>
 
-
     /* =====================================================
        CONFIG
-       ===================================================== */
+    ===================================================== */
 
     const config = {
-
-      /* -----------------------------------------------
-         QUESTION TEXTS
-         ----------------------------------------------- */
 
       questionTexts: [
 
@@ -1106,65 +1007,249 @@
       ],
 
 
-      /* -----------------------------------------------
-         CHARACTER MEDIA
-
-         Kosong = emoji 🥺
-         ----------------------------------------------- */
-
-      characterMedia: "",
-
-
-      /* -----------------------------------------------
-         BUTTON TEXT
-         ----------------------------------------------- */
-
       yesText:
         "Iyaa aku sayang",
+
 
       noText:
         "Gakk",
 
 
-      /* -----------------------------------------------
-         MAX NO CLICK
-         ----------------------------------------------- */
+      maxNoClicks:
+        6,
 
-      maxNoClicks: 6,
-
-
-      /* -----------------------------------------------
-         RESULT
-         ----------------------------------------------- */
 
       resultTitle:
         "Yeayy! Makasih ya ❤️",
+
 
       resultSubtitle:
         "Aku juga sayang kamu kok!",
 
 
-      /* -----------------------------------------------
-         RESULT MEDIA
-
-         Kosong = ❤️
-         ----------------------------------------------- */
-
-      resultMedia: "",
-
-
-      /* -----------------------------------------------
-         GALLERY PHOTOS
-
-         Ganti URL di bawah dengan foto sendiri.
-
-         Contoh:
-         "https://example
       galleryPhotos: [
-  "IMG-20260908-WA0002.jpg",
-  "IMG-20260908-WA0007.jpg",
-  "IMG-20260911-WA0000.jpg",
-  "IMG-20260917-WA0020.jpg"
-],
 
-galleryStyle: "polaroid",
+        "IMG-20260908-WA0002.jpg",
+
+        "IMG-20260908-WA0007.jpg",
+
+        "IMG-20260911-WA0000.jpg",
+
+        "IMG-20260917-WA0020.jpg"
+
+      ]
+
+    };
+
+
+    /* =====================================================
+       WAIT UNTIL PAGE READY
+    ===================================================== */
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      function () {
+
+
+        /* =================================================
+           GET ELEMENTS
+        ================================================= */
+
+        const questionState =
+          document.getElementById(
+            "questionState"
+          );
+
+
+        const transitionState =
+          document.getElementById(
+            "transitionState"
+          );
+
+
+        const resultState =
+          document.getElementById(
+            "resultState"
+          );
+
+
+        const questionTitle =
+          document.getElementById(
+            "questionTitle"
+          );
+
+
+        const yesButton =
+          document.getElementById(
+            "yesButton"
+          );
+
+
+        const noButton =
+          document.getElementById(
+            "noButton"
+          );
+
+
+        const resultTitle =
+          document.getElementById(
+            "resultTitle"
+          );
+
+
+        const resultSubtitle =
+          document.getElementById(
+            "resultSubtitle"
+          );
+
+
+        const gallery =
+          document.getElementById(
+            "gallery"
+          );
+
+
+        const hearts =
+          document.getElementById(
+            "hearts"
+          );
+
+
+        /* =================================================
+           INITIAL TEXT
+        ================================================= */
+
+        questionTitle.textContent =
+          config.questionTexts[0];
+
+
+        yesButton.textContent =
+          config.yesText;
+
+
+        noButton.textContent =
+          config.noText;
+
+
+        resultTitle.textContent =
+          config.resultTitle;
+
+
+        resultSubtitle.textContent =
+          config.resultSubtitle;
+
+
+        /* =================================================
+           VARIABLES
+        ================================================= */
+
+        let noClickCount = 0;
+
+        let finished = false;
+
+
+        /* =================================================
+           CHANGE QUESTION
+        ================================================= */
+
+        function changeQuestion(index) {
+
+          questionTitle.classList.add(
+            "fade"
+          );
+
+
+          setTimeout(
+            function () {
+
+              questionTitle.textContent =
+                config.questionTexts[index];
+
+
+              questionTitle.classList.remove(
+                "fade"
+              );
+
+            },
+            200
+          );
+        }
+
+
+        /* =================================================
+           NO BUTTON
+        ================================================= */
+
+        noButton.addEventListener(
+          "click",
+          function (event) {
+
+            event.preventDefault();
+
+
+            if (finished) {
+
+              return;
+            }
+
+
+            noClickCount++;
+
+
+            /* ---------------------------------------------
+               CHANGE QUESTION
+            --------------------------------------------- */
+
+            const questionIndex =
+              Math.min(
+                noClickCount,
+                config.questionTexts.length - 1
+              );
+
+
+            changeQuestion(
+              questionIndex
+            );
+
+
+            /* ---------------------------------------------
+               MOVE NO DOWN
+            --------------------------------------------- */
+
+            const scale =
+              Math.max(
+                0.15,
+                1 -
+                (noClickCount * 0.15)
+              );
+
+
+            const translateY =
+              noClickCount * 15;
+
+
+            const opacity =
+              Math.max(
+                0.3,
+                1 -
+                (noClickCount * 0.12)
+              );
+
+
+            noButton.style.transform =
+              `translateY(${translateY}px) scale(${scale})`;
+
+
+            noButton.style.opacity =
+              opacity;
+
+
+            /* ---------------------------------------------
+               GROW YES
+            --------------------------------------------- */
+
+            const progress =
+              Math.min(
+                1,
+                noClickCount /
+                config.maxNoClicks
