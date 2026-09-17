@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- Responsive untuk perangkat mobile -->
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  >
+
+  <title>Kamu Sayang Aku Gaa?? ❤️</title>
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+    /* =========================================
+       RESET & GLOBAL
+       ========================================= */
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #ff9a9e;
+    }
+
+    button {
+      border: none;
+      outline: none;
+      font-family: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* =========================================
+       APP & COMMON STATE
+       ========================================= */
+
+    #app {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+
+    .state {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* =========================================
+       STATE 1 — QUESTION
+       ========================================= */
+
+    #questionState {
+      z-index: 10;
+
+      padding: 20px;
+
+      background: var(--bg-gradient);
+
+      opacity: 1;
+      visibility: visible;
+
+      transition:
+        opacity 0.4s ease,
+        visibility 0.4s ease;
+    }
+
+    #questionState.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* =========================================
+       QUESTION CARD
+       ========================================= */
+
+    .question-card {
+      position: relative;
+
+      width: 100%;
+      max-width: 320px;
+
+      padding: 32px 24px;
+
+      border-radius: 24px;
+
+      background: #ffffff;
+
+      box-shadow:
+        0 20px 50px rgba(170, 70, 110, 0.18),
+        0 6px 18px rgba(170, 70, 110, 0.10);
+
+      overflow: visible;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      opacity: 1;
+      transform: scale(1);
+
+      transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
+    }
+
+    /* Card menghilang saat Yes menjadi fullscreen */
+    .question-card.card-hidden {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+
+    /* =========================================
+       QUESTION TITLE
+       ========================================= */
+
+    .question-title {
+      width: 100%;
+
+      margin-bottom: 18px;
+
+      color: #333333;
+
+      font-family: "Caveat", cursive;
+      font-size: 30px;
+      font-weight: 700;
+
+      line-height: 1.15;
+      text-align: center;
+
+      opacity: 1;
+      transform: translateY(0);
+
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    /* State ketika teks sedang diganti */
+    .question-title.fade-out {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+
+    /* =========================================
+       CHARACTER MEDIA
+       ========================================= */
+
+    .character-media {
+      width: 110px;
+      height: 110px;
+
+      margin-bottom: 22px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .character-media img,
+    .character-media video {
+      width: 100%;
+      height: 100%;
+
+      object-fit: contain;
+
+      display: block;
+    }
+
+    /* Fallback kalau URL media belum diganti */
+    .media-placeholder {
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 68px;
+    }
+
+    /* =========================================
+       BUTTON CONTAINER
+       ========================================= */
+
+    .button-container {
+      width: 100%;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 12px;
+
+      /*
+        Ruang ekstra agar tombol Yes yang
+        membesar tetap memiliki ruang visual.
+      */
+      min-height: 108px;
+    }
+
+    /* =========================================
+       BUTTON BASE
+       ========================================= */
+
+    .choice-button {
+      width: 160px;
+      min-height: 48px;
+
+      padding: 10px 18px;
+
+      border-radius: 999px;
+
+      color: #ffffff;
+
+      font-size: 16px;
+      font-weight: 700;
+
+      white-space: nowrap;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      transition:
+        all 0.4s ease;
+
+      will-change:
+        transform,
+        width,
+        height,
+        border-radius,
+        font-size,
+        opacity;
+    }
+
+    /* =========================================
+       YES BUTTON — NORMAL
+       ========================================= */
+
+    #yesButton {
+      position: relative;
+
+      z-index: 50;
+
+      width: 160px;
+      height: 48px;
+
+      background: var(--color-primary);
+
+      box-shadow:
+        0 6px 15px rgba(46, 204, 113, 0.28);
+
+      transform-origin: center center;
+
+      transition:
+        all 0.4s ease;
+    }
+
+    /* =========================================
+       NO BUTTON — NORMAL
+       ========================================= */
+
+    #noButton {
+      position: relative;
+
+      z-index: 60;
+
+      width: 160px;
+      height: 48px;
+
+      background: var(--color-danger);
+
+      box-shadow:
+        0 6px 15px rgba(231, 76, 60, 0.22);
+
+      transform:
+        translateY(0)
+        scale(1);
+
+      opacity: 1;
+
+      transition:
+        all 0.35s ease;
+
+      will-change:
+        transform,
+        opacity;
+    }
+
+    /* =========================================
+       YES BUTTON — FULLSCREEN
+       ========================================= */
+
+    #yesButton.fullscreen {
+      position: fixed;
+
+      top: 0;
+      left: 0;
+
+      width: 100vw;
+      height: 100vh;
+
+      /*
+        Fallback untuk browser mobile modern.
+      */
+      width: 100dvw;
+      height: 100dvh;
+
+      max-width: none;
+      min-height: 0;
+
+      border-radius: 0;
+
+      z-index: 9999;
+
+      margin: 0;
+      padding: 20px;
+
+      background: var(--color-primary);
+
+      box-shadow: none;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: #ffffff;
+
+      /*
+        Jangan scale di sini.
+        Fullscreen ditentukan oleh ukuran viewport.
+      */
+      transform: scale(1);
+
+      font-size:
+        clamp(40px, 12vw, 100px);
+
+      line-height: 1.05;
+
+      white-space: normal;
+
+      transition:
+        all 0.4s ease;
+    }
+
+    /* =========================================
+       STATE 2 — TRANSITION
+       ========================================= */
+
+    #transitionState {
+      position: fixed;
+      inset: 0;
+
+      width: 100vw;
+      height: 100vh;
+
+      width: 100dvw;
+      height: 100dvh;
+
+      z-index: 9000;
+
+      background: var(--color-primary);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+
+      transition:
+        opacity 0.45s ease,
+        visibility 0.45s ease;
+    }
+
+    #transitionState.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /*
+      Teks transition.
+      Pada saat fullscreen Yes sudah aktif,
+      teks tombol sendiri berada di tengah.
+    */
+    .transition-text {
+      color: #ffffff;
+
+      font-family: "Caveat", cursive;
+
+      font-size:
+        clamp(40px, 12vw, 100px);
+
+      font-weight: 700;
+
+      text-align: center;
+
+      opacity: 0;
+      transform: scale(0.5);
+
+      animation: none;
+    }
+
+    #transitionState.active .transition-text {
+      animation:
+        transitionPop
+        0.65s
+        cubic-bezier(0.34, 1.56, 0.64, 1)
+        forwards;
+    }
+
+    @keyframes transitionPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+
+      65% {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* =========================================
+       STATE 3 — RESULT
+       ========================================= */
+
+    #resultState {
+      z-index: 5;
+
+      padding: 20px;
+
+      background: var(--bg-gradient);
+
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+
+      transition:
+        opacity 0.5s ease,
+        visibility 0.5s ease;
+    }
+
+    #resultState.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    /* =========================================
+       RESULT CONTENT
+       ========================================= */
+
+    .result-content {
+      position: relative;
+
+      z-index: 2;
+
+      width: 100%;
+      max-width: 380px;
+
+      display: flex;
+      flex-direction: column;
+
+      align-items: center;
+
+      text-align: center;
+    }
+
+    .result-title {
+      color: #ffffff;
+
+      font-family: "Caveat", cursive;
+
+      font-size:
+        clamp(42px, 12vw, 64px);
+
+      font-weight: 700;
+
+      line-height: 1;
+
+      text-shadow:
+        0 4px 10px rgba(150, 60, 90, 0.15);
+
+      opacity: 0;
+      transform: translateY(20px);
+
+      animation:
+        resultTextIn
+        0.7s
+        ease
+        0.1s
+        forwards;
+    }
+
+    /* =========================================
+       RESULT MEDIA
+       ========================================= */
+
+    .result-media {
+      width: 150px;
+      height: 150px;
+
+      margin:
+        20px 0 12px;
+
+      opacity: 0;
+      transform: scale(0.6);
+
+      animation:
+        resultMediaIn
+        0.8s
+        cubic-bezier(0.34, 1.56, 0.64, 1)
+        0.25s
+        forwards;
+    }
+
+    .result-media img,
+    .result-media video {
+      width: 100%;
+      height: 100%;
+
+      object-fit: contain;
+
+      display: block;
+    }
+
+    /* =========================================
+       RESULT SUBTITLE
+       ========================================= */
+
+    .result-subtitle {
+      color: #ffffff;
+
+      font-family: "Caveat", cursive;
+
+      font-size: 25px;
+      font-weight: 600;
+
+      line-height: 1.2;
+
+      opacity: 0;
+      transform: translateY(15px);
+
+      animation:
+        resultTextIn
+        0.7s
+        ease
+        0.45s
+        forwards;
+    }
+
+    @keyframes resultTextIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes resultMediaIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.6);
+      }
+
+      70% {
+        opacity: 1;
+        transform: scale(1.08);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* =========================================
+       FALLING HEARTS
+       ========================================= */
+
+    #heartsContainer {
+      position: absolute;
+      inset: 0;
+
+      overflow: hidden;
+
+      pointer-events: none;
+
+      z-index: 1;
+    }
+
+    .falling-heart {
+      position: absolute;
+
+      top: -60px;
+
+      font-size: var(--heart-size);
+
+      opacity: var(--heart-opacity);
+
+      pointer-events: none;
+
+      animation:
+        heartFall
+        var(--fall-duration)
+        linear
+        var(--fall-delay)
+        infinite;
+
+      will-change: transform;
+    }
+
+    @keyframes heartFall {
+      0% {
+        transform:
+          translate3d(0, -60px, 0)
+          rotate(0deg);
+      }
+
+      25% {
+        transform:
+          translate3d(var(--sway), 25vh, 0)
+          rotate(12deg);
+      }
+
+      50% {
+        transform:
+          translate3d(
+            calc(var(--sway) * -0.7),
+            50vh,
+            0
+          )
+          rotate(-15deg);
+      }
+
+      75% {
+        transform:
+          translate3d(var(--sway), 75vh, 0)
+          rotate(10deg);
+      }
+
+      100% {
+        transform:
+          translate3d(
+            calc(var(--sway) * -0.5),
+            115vh,
+            0
+          )
+          rotate(-12deg);
+      }
+    }
+
+    /* =========================================
+       HP KECIL 360px
+       ========================================= */
+
+    @media (max-width: 360px) {
+
+      .question-card {
+        max-width: 300px;
+
+        padding:
+          28px 18px;
+      }
+
+      .question-title {
+        font-size: 28px;
+      }
+
+      .character-media {
+        width: 95px;
+        height: 95px;
+
+        margin-bottom: 18px;
+      }
+
+      .choice-button {
+        width: 150px;
+      }
+    }
+
+    /* =========================================
+       REDUCED MOTION
+       ========================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+
+<body>
+
+  <!-- =========================================
+       APP UTAMA
+       ========================================= -->
+
+  <main id="app">
+
+    <!-- =========================================
+         STATE 1 — QUESTION
+         ========================================= -->
+
+    <section
+      id="questionState"
+      class="state"
+    >
+
+      <div
+        id="questionCard"
+        class="question-card"
+      >
+
+        <!-- Judul pertanyaan -->
+        <h1
+          id="questionTitle"
+          class="question-title"
+        ></h1>
+
+
+        <!-- Media karakter -->
+        <div
+          id="characterMedia"
+          class="character-media"
+        ></div>
+
+
+        <!-- Tombol Yes dan No -->
+        <div
+          id="buttonContainer"
+          class="button-container"
+        >
+
+          <!-- Tombol Yes -->
+          <button
+            id="yesButton"
+            class="choice-button"
+            type="button"
+          >
+            Iyaa aku sayang
+          </button>
+
+
+          <!-- Tombol No -->
+          <button
+            id="noButton"
+            class="choice-button"
+            type="button"
+          >
+            Gakk
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         STATE 2 — TRANSITION
+         ========================================= -->
+
+    <section
+      id="transitionState"
+      class="state"
+    >
+
+      <div
+        id="transitionText"
+        class="transition-text"
+      >
+        Iyaa aku sayang ❤️
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         STATE 3 — RESULT
+         ========================================= -->
+
+    <section
+      id="resultState"
+      class="state"
+    >
+
+      <!-- Hati jatuh -->
+      <div
+        id="heartsContainer"
+      ></div>
+
+
+      <!-- Konten hasil -->
+      <div
+        class="result-content"
+      >
+
+        <!-- Judul hasil -->
+        <h1
+          id="resultTitle"
+          class="result-title"
+        ></h1>
+
+
+        <!-- Media karakter kedua -->
+        <div
+          id="resultMedia"
+          class="result-media"
+        ></div>
+
+
+        <!-- Subtitle hasil -->
+        <p
+          id="resultSubtitle"
+          class="result-subtitle"
+        ></p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script>
+    /* ==================================================
+       CONFIG OBJECT
+       Semua konten utama website ada di sini.
+       Tinggal edit bagian ini.
+       ================================================== */
+
+    const config = {
+
+      questionTexts: [
+        "Kamu sayang aku gaa??",
+        "Yakin nih gamau bilang sayang?",
+        "Coba deh dipikir lagi...",
+        "Ish, masa gak sayang sih 🥺",
+        "Terakhir nih, sayang gak?"
+      ],
+
+      characterMedia:
+        "GANTI_DENGAN_URL_GAMBAR_GIF_ATAU_VIDEO",
+
+      yesText:
+        "Iyaa aku sayang",
+
+      noText:
+        "Gakk",
+
+      maxNoClicks:
+        6,
+
+      resultTitle:
+        "Yeayy! Makasih ya ❤️",
+
+      resultSubtitle:
+        "Aku juga sayang kamu kok!",
+
+      resultMedia:
+        "GANTI_DENGAN_URL_GAMBAR_GIF_ATAU_VIDEO",
+
+      colorPrimary:
+        "#2ecc71",
+
+      colorDanger:
+        "#e74c3c",
+
+      bgGradient:
+        "linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)"
+    };
+
+
+    /* ==================================================
+       CSS VARIABLES
+       Memasukkan konfigurasi warna ke CSS.
+       ================================================== */
+
+    document.documentElement.style.setProperty(
+      "--color-primary",
+      config.colorPrimary
+    );
+
+    document.documentElement.style.setProperty(
+      "--color-danger",
+      config.colorDanger
+    );
+
+    document.documentElement.style.setProperty(
+      "--bg-gradient",
+      config.bgGradient
+    );
+
+
+    /* ==================================================
+       DOM ELEMENTS
+       Mengambil element yang diperlukan JavaScript.
+       ================================================== */
+
+    const questionState =
+      document.getElementById(
+        "questionState"
+      );
+
+    const questionCard =
+      document.getElementById(
+        "questionCard"
+      );
+
+    const questionTitle =
+      document.getElementById(
+        "questionTitle"
+      );
+
+    const characterMedia =
+      document.getElementById(
+        "characterMedia"
+      );
+
+    const yesButton =
+      document.getElementById(
+        "yesButton"
+      );
+
+    const noButton =
+      document.getElementById(
+        "noButton"
+      );
+
+    const transitionState =
+      document.getElementById(
+        "transitionState"
+      );
+
+    const transitionText =
+      document.getElementById(
+        "transitionText"
+      );
+
+    const resultState =
+      document.getElementById(
+        "resultState"
+      );
+
+    const resultTitle =
+      document.getElementById(
+        "resultTitle"
+      );
+
+    const resultSubtitle =
+      document.getElementById(
+        "resultSubtitle"
+      );
+
+    const resultMedia =
+      document.getElementById(
+        "resultMedia"
+      );
+
+    const heartsContainer =
+      document.getElementById(
+        "heartsContainer"
+      );
+
+
+    /* ==================================================
+       QUESTION STATE
+       ================================================== */
+
+    let questionIndex = 0;
+
+    let noClickCount = 0;
+
+    let isTransitioning = false;
+
+
+    /* ==================================================
+       RENDER CHARACTER MEDIA
+       Otomatis:
+       .mp4/.webm -> video
+       selain itu -> img
+       ================================================== */
+
+    function renderCharacterMedia(url) {
+
+      /*
+        Container media.
+      */
+
+      const container =
+        document.createElement(
+          "div"
+        );
+
+
+      /*
+        Jika URL masih placeholder,
+        gunakan emoji sebagai fallback.
+      */
+
+      if (
+        !url ||
+        url.includes(
+          "GANTI_DENGAN_URL"
+        )
+      ) {
+
+        container.className =
+          "media-placeholder";
+
+        container.textContent =
+          "🥰";
+
+        return container;
+      }
+
+
+      /*
+        Bersihkan query string dan hash
+        sebelum mengecek ekstensi.
+      */
+
+      const cleanUrl =
+        url
+          .split("?")[0]
+          .split("#")[0]
+          .toLowerCase();
+
+
+      /*
+        Deteksi apakah URL adalah video.
+      */
+
+      const isVideo =
+        cleanUrl.endsWith(".mp4") ||
+        cleanUrl.endsWith(".webm");
+
+
+      /* ====================
