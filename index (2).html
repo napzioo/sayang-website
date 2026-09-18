@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Do You Love Me?</title>
+<style>
+  :root{
+    --pink-1:#ffe4ec;
+    --pink-2:#ffc2d6;
+    --pink-3:#ff9ebb;
+    --pink-4:#ff6fa5;
+    --blush:#fff0f5;
+    --white:#ffffff;
+    --text:#8a4a63;
+    --shadow-color: rgba(255,111,165,0.32);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    width:100%; height:100%;
+    overflow:hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body{
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: radial-gradient(circle at 30% 20%, var(--pink-1), var(--blush) 60%, var(--white) 100%);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+
+  .blob{
+    position:fixed; border-radius:50%;
+    filter: blur(38px); opacity:0.3;
+    pointer-events:none; z-index:0;
+  }
+  .blob1{ width:220px; height:220px; background:var(--pink-2); top:-60px; left:-60px; }
+  .blob2{ width:250px; height:250px; background:var(--pink-3); bottom:-80px; right:-80px; }
+
+  .screen{
+    position:relative; z-index:1;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    width:100%; height:100%;
+    padding: 20px;
+    overflow-y:auto; overflow-x:hidden;
+  }
+
+  .hidden{ display:none !important; }
+  .fading{ opacity:0; transform: translateY(-6px); pointer-events:none; }
+
+  /* ---------- entrance animations (initial load) ---------- */
+  @keyframes fadeInUp{
+    from{ opacity:0; transform: translateY(14px) scale(0.97); }
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+  .enter{ opacity:0; animation: fadeInUp 0.7s var(--smooth) forwards; }
+  .enter-1{ animation-delay: 0.05s; }
+  .enter-2{ animation-delay: 0.2s; }
+  .enter-3{ animation-delay: 0.35s; }
+
+  .bear-gif{
+    width: clamp(130px, 28vw, 200px);
+    height:auto;
+    border-radius:22px;
+    box-shadow: 0 10px 28px var(--shadow-color);
+    margin-bottom: 16px;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  h1.question{
+    color: var(--text);
+    font-size: clamp(1.35rem, 4vw, 2.15rem);
+    margin: 0 0 26px 0;
+    font-weight:700;
+    letter-spacing:0.3px;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  /* text swap animation used for the "Beneran nih?" interstitial */
+  .teaser-swap-out{
+    opacity:0 !important;
+    transform: translateY(-6px) scale(0.95) !important;
+    transition: opacity 0.22s ease, transform 0.22s ease !important;
+  }
+  .teaser-swap-in{
+    animation: teaserPopIn 0.5s var(--spring) !important;
+  }
+  @keyframes teaserPopIn{
+    from{ opacity:0; transform: translateY(6px) scale(0.9); }
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  .buttons-wrap{
+    display:flex;
+    gap:22px;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .btn{
+    border:none; outline:none; cursor:pointer;
+    font-family:inherit; font-weight:700; color:#fff;
+    border-radius:999px;
+    padding: 16px 40px;
+    font-size: 1.05rem;
+    box-shadow: 0 8px 20px var(--shadow-color);
+    background: linear-gradient(135deg, var(--pink-3), var(--pink-4));
+    transform: scale(1);
+    transition:
+      transform 0.5s var(--spring),
+      box-shadow 0.4s ease,
+      opacity 0.4s ease;
+    -webkit-tap-highlight-color: transparent;
+    will-change: transform;
+    white-space:nowrap;
+  }
+
+  .btn:active{ filter: brightness(0.97); }
+
+  .yes-btn{ position:relative; z-index:3; }
+  .yes-btn.glow{
+    box-shadow: 0 8px 24px var(--shadow-color), 0 0 26px rgba(255,111,165,0.5);
+  }
+
+  .no-btn{
+    background: linear-gradient(135deg, #ffffff, var(--pink-1));
+    color: var(--pink-4);
+    border: 2px solid var(--pink-2);
+    max-width: min(68vw, 300px);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    transition: transform 0.45s var(--smooth), opacity 0.4s ease;
+  }
+
+  .no-btn .no-label{
+    display:inline-block;
+    transition: opacity 0.16s ease;
+  }
+
+  /* ---------- fullscreen reveal overlay ---------- */
+  .yes-overlay{
+    position:fixed; inset:0;
+    z-index:1000;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, var(--pink-3), var(--pink-4));
+    clip-path: circle(0% at 50% 50%);
+    transition: clip-path 0.95s var(--smooth);
+    pointer-events:none;
+  }
+  .yes-overlay.active{
+    clip-path: circle(150% at var(--origin-x, 50%) var(--origin-y, 50%));
+    pointer-events:auto;
+  }
+  .yes-overlay-btn{
+    background:transparent; border:none; color:#fff;
+    font-weight:800; letter-spacing:1px;
+    font-size: clamp(2.1rem, 9vw, 4rem);
+    cursor:pointer;
+    animation: pulseGlow 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{ filter:brightness(1); transform:scale(1); }
+    50%{ filter:brightness(1.07); transform:scale(1.03); }
+  }
+
+  @keyframes wiggle{
+    0%{ transform: scale(var(--no-scale,1)) rotate(0deg); }
+    25%{ transform: scale(var(--no-scale,1)) rotate(-5deg); }
+    75%{ transform: scale(var(--no-scale,1)) rotate(5deg); }
+    100%{ transform: scale(var(--no-scale,1)) rotate(0deg); }
+  }
+  .wiggle-anim{ animation: wiggle 0.45s ease; }
+
+  /* ---------- success screen ---------- */
+  #success-screen{ padding-top: 26px; padding-bottom: 26px; }
+  #success-screen .enter{ opacity:0; }
+  #success-screen h1{
+    color: var(--text);
+    font-size: clamp(1.4rem, 4.4vw, 2.3rem);
+    margin: 4px 0 6px 0;
+  }
+  #success-screen p.subtitle{
+    color: var(--pink-4);
+    font-size: 1.05rem;
+    margin: 0 0 26px 0;
+    font-weight:600;
+  }
+
+  .scrapbook{
+    display:flex;
+    flex-direction:row;
+    gap: 6px;
+    justify-content:center;
+    align-items:center;
+    max-width: 920px;
+    width:100%;
+    padding: 10px 14px 4px 14px;
+  }
+
+  .polaroid{
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 10px 10px 18px 10px;
+    box-shadow: 0 12px 24px var(--shadow-color);
+    width: clamp(100px, 22vw, 168px);
+    flex: 0 0 auto;
+    opacity:0;
+    cursor: pointer;
+    transition: transform 0.25s var(--smooth), box-shadow 0.25s ease;
+  }
+  .polaroid:hover{ transform: translateY(-4px) scale(1.03) rotate(var(--end-rot,0deg)); box-shadow: 0 18px 30px var(--shadow-color); }
+
+  .polaroid img{
+    width:100%;
+    aspect-ratio: 4/5;
+    object-fit:cover;
+    border-radius: 5px;
+    display:block;
+    background: linear-gradient(135deg, var(--pink-1), var(--white));
+    pointer-events:none;
+  }
+
+  .polaroid.p1{ transform-origin:bottom center; margin-right:-14px; z-index:1; --end-rot:-6deg; }
+  .polaroid.p2{ z-index:2; --end-rot:2deg; }
+  .polaroid.p3{ transform-origin:bottom center; margin-left:-14px; z-index:1; --end-rot:5deg; }
+
+  /* three distinct "stuck to the wall" entrance styles */
+  @keyframes photoInBottom{
+    0%{ opacity:0; transform: translateY(38px) rotate(0deg) scale(0.85); }
+    65%{ opacity:1; }
+    100%{ opacity:1; transform: translateY(0) rotate(var(--end-rot,0deg)) scale(1); }
+  }
+  @keyframes photoInOvershoot{
+    0%{ opacity:0; transform: translateY(-22px) scale(0.7) rotate(0deg); }
+    55%{ opacity:1; transform: translateY(2px) scale(1.08) rotate(calc(var(--end-rot,0deg) * 1.4)); }
+    80%{ transform: translateY(-1px) scale(0.97) rotate(calc(var(--end-rot,0deg) * 0.8)); }
+    100%{ opacity:1; transform: translateY(0) scale(1) rotate(var(--end-rot,0deg)); }
+  }
+  @keyframes photoInSide{
+    0%{ opacity:0; transform: translateX(30px) rotate(0deg) scale(0.88); }
+    65%{ opacity:1; }
+    100%{ opacity:1; transform: translateX(0) rotate(var(--end-rot,0deg)) scale(1); }
+  }
+
+  .polaroid.p1.play{ animation: photoInBottom 0.75s var(--spring) forwards; animation-delay: 0.1s; }
+  .polaroid.p2.play{ animation: photoInOvershoot 0.8s var(--spring) forwards; animation-delay: 0.4s; }
+  .polaroid.p3.play{ animation: photoInSide 0.75s var(--spring) forwards; animation-delay: 0.7s; }
+
+  @media (max-width: 480px){
+    .btn{ padding:14px 28px; font-size:0.98rem; }
+    .buttons-wrap{ gap:14px; }
+    .scrapbook{ gap:2px; }
+    .polaroid{ width: 30vw; padding: 8px 8px 14px 8px; }
+    .polaroid.p1{ margin-right:-10px; }
+    .polaroid.p3{ margin-left:-10px; }
+  }
+
+  /* ---------- lightbox ---------- */
+  .lightbox{
+    position:fixed; inset:0;
+    background: rgba(60, 20, 35, 0.55);
+    display:flex; align-items:center; justify-content:center;
+    z-index: 2000;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity 0.3s ease;
+    padding: 30px;
+  }
+  .lightbox.active{ opacity:1; pointer-events:auto; }
+
+  .lightbox-inner{
+    position:relative;
+    max-width: min(88vw, 480px);
+    max-height: 82vh;
+    transform: scale(0.85);
+    opacity:0;
+    transition: transform 0.35s var(--spring), opacity 0.3s ease;
+  }
+  .lightbox.active .lightbox-inner{ transform: scale(1); opacity:1; }
+
+  .lightbox-inner img{
+    width:100%;
+    height:100%;
+    max-height: 82vh;
+    object-fit: contain;
+    border-radius: 14px;
+    display:block;
+    background: var(--white);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  }
+
+  .lightbox-close{
+    position:absolute;
+    top:-14px; right:-14px;
+    width:36px; height:36px;
+    border-radius:50%;
+    background: var(--white);
+    color: var(--pink-4);
+    border:none;
+    font-size:1.1rem;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- love confetti ---------- */
+  #hearts-layer{
+    position:fixed; inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index: 1200;
+  }
+  .heart-piece{
+    position:absolute;
+    top:-30px;
+    opacity:0;
+    will-change: transform, opacity;
+    animation-name: heart-fall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    user-select:none;
+  }
+  @keyframes heart-fall{
+    0%{ transform: translate(0,0) rotate(0deg); opacity:0; }
+    10%{ opacity:0.95; }
+    90%{ opacity:0.85; }
+    100%{ transform: translate(var(--drift,0px), 112vh) rotate(var(--spin,180deg)); opacity:0; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div id="hearts-layer"></div>
+
+  <div id="question-screen" class="screen">
+    <img class="bear-gif enter enter-1" id="questionBear"
+      src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmo3c3l5ODh3ZGN6NHhhaDE2Mjg1djh2YzF0M2xpMWo1Y3k2Z2IzYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/cLS1cfxvGOPVpf9g3y/giphy.gif"
+      alt="Cute bear">
+    <h1 class="question enter enter-2" id="questionTitle">Do you love me?</h1>
+    <div class="buttons-wrap enter enter-3" id="buttonsWrap">
+      <button class="btn yes-btn" id="yesBtn">Yes</button>
+      <button class="btn no-btn" id="noBtn"><span class="no-label" id="noLabel">No</span></button>
+    </div>
+  </div>
+
+  <div class="yes-overlay" id="yesOverlay">
+    <button class="yes-overlay-btn" id="yesOverlayBtn">Yes</button>
+  </div>
+
+  <div id="success-screen" class="screen hidden">
+    <img class="bear-gif enter enter-1" id="successBear"
+      src="https://media1.tenor.com/m/lVGuUN_-38gAAAAC/heart-love.gif"
+      alt="Happy bear">
+    <h1 class="enter enter-2" id="successTitle">I knew it! ❤️</h1>
+    <p class="subtitle enter enter-3" id="successSubtitle">
+      Terima Kasih, Cintaku Kala gelap datang menepi,
+      Kamu hadir bawa Pagi.
+      Menemani langkah yang letih,
+      Mengubah tangis jadi tawa di pipi.
+      Terima kasih untuk hati yang tulus,
+      Cinta ini kan terus tulus dan tulus.
+      Di setiap waktu dan hela napas,
+      Rasa sayangku takkan pernah lepas.</p>
+
+    <div class="scrapbook" id="scrapbook">
+      <div class="polaroid p1" data-full="https://i.ibb.co.com/HTfBnV9c/IMG-20260908-WA0002.jpg"><img src="https://i.ibb.co.com/HTfBnV9c/IMG-20260908-WA0002.jpg" alt=""></div>
+      <div class="polaroid p2" data-full="https://i.ibb.co.com/TDknLYpM/IMG-20260917-WA0020.jpg"><img src="https://i.ibb.co.com/TDknLYpM/IMG-20260917-WA0020.jpg" alt=""></div>
+      <div class="polaroid p3" data-full="https://i.ibb.co.com/jP1spnH1/IMG-20260908-WA0007.jpg"><img src="https://i.ibb.co.com/jP1spnH1/IMG-20260908-WA0007.jpg" alt=""></div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <div class="lightbox-inner" id="lightboxInner">
+      <button class="lightbox-close" id="lightboxClose">✕</button>
+      <img id="lightboxImg" src="" alt="memory full view">
+    </div>
+  </div>
+
+<script>
+(function(){
+  var yesBtn = document.getElementById('yesBtn');
+  var noBtn = document.getElementById('noBtn');
+  var noLabel = document.getElementById('noLabel');
+  var questionScreen = document.getElementById('question-screen');
+  var successScreen = document.getElementById('success-screen');
+  var questionBear = document.getElementById('questionBear');
+  var questionTitle = document.getElementById('questionTitle');
+  var buttonsWrap = document.getElementById('buttonsWrap');
+  var yesOverlay = document.getElementById('yesOverlay');
+  var yesOverlayBtn = document.getElementById('yesOverlayBtn');
+  var heartsLayer = document.getElementById('hearts-layer');
+  var scrapbook = document.getElementById('scrapbook');
+  var lightbox = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightboxImg');
+  var lightboxClose = document.getElementById('lightboxClose');
+
+  var ORIGINAL_QUESTION = questionTitle.textContent;
+  var noClicks = 0;
+  var COVER_THRESHOLD = 7;
+  var isCovering = false;
+  var firstYesTeaserShown = false;
+  var interactionLocked = false;
+
+  var MAX_YES_SCALE = 2.0;
+  var MIN_NO_SCALE = 0.4;
+
+  var noMessages = [
+    'No',
+    'Are you sure?',
+    'Yakin?',
+    'Serius?',
+    'Think again 👀',
+    'Last chance!',
+    'Please? 🥺',
+    'Beneran gak mau? 😢'
+  ];
+
+  function triggerWiggle(el, scale){
+    el.style.setProperty('--no-scale', scale);
+    el.classList.remove('wiggle-anim');
+    void el.offsetWidth;
+    el.classList.add('wiggle-anim');
+  }
+
+  function updateNoLabel(){
+    var idx = Math.min(noClicks, noMessages.length - 1);
+    var msg = noMessages[idx];
+    noLabel.style.opacity = '0';
+    setTimeout(function(){
+      noLabel.textContent = msg;
+      noLabel.style.opacity = '1';
+    }, 90);
+  }
+
+  function updateSizes(){
+    var step = Math.min(noClicks, COVER_THRESHOLD);
+    var growFactor = Math.min(MAX_YES_SCALE, 1 + step * 0.15);
+    yesBtn.style.transform = 'scale(' + growFactor + ')';
+    var shrinkFactor = Math.max(MIN_NO_SCALE, 1 - step * 0.085);
+    noBtn.style.transform = 'scale(' + shrinkFactor + ')';
+    noBtn.style.opacity = Math.max(0.4, 1 - step * 0.075);
+    if (step >= 3) yesBtn.classList.add('glow');
+  }
+
+  function revealFullscreenYes(){
+    isCovering = true;
+
+    var rect = yesBtn.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var originX = (cx / window.innerWidth) * 100;
+    var originY = (cy / window.innerHeight) * 100;
+    yesOverlay.style.setProperty('--origin-x', originX + '%');
+    yesOverlay.style.setProperty('--origin-y', originY + '%');
+
+    questionBear.classList.add('fading');
+    questionTitle.classList.add('fading');
+    buttonsWrap.classList.add('fading');
+
+    requestAnimationFrame(function(){
+      yesOverlay.classList.add('active');
+    });
+  }
+
+  function handleNoClick(){
+    if (isCovering || interactionLocked) return;
+    noClicks++;
+    updateNoLabel();
+    updateSizes();
+    triggerWiggle(noBtn, Math.max(MIN_NO_SCALE, 1 - Math.min(noClicks, COVER_THRESHOLD) * 0.085));
+
+    if (noClicks >= COVER_THRESHOLD) {
+      setTimeout(revealFullscreenYes, 220);
+    }
+  }
+
+  function swapQuestionText(newText, callback){
+    questionTitle.classList.add('teaser-swap-out');
+    setTimeout(function(){
+      questionTitle.textContent = newText;
+      questionTitle.classList.remove('teaser-swap-out');
+      questionTitle.classList.remove('teaser-swap-in');
+      void questionTitle.offsetWidth;
+      questionTitle.classList.add('teaser-swap-in');
+      setTimeout(function(){
+        questionTitle.classList.remove('teaser-swap-in');
+        if (callback) callback();
+      }, 500);
+    }, 220);
+  }
+
+  function showFirstYesTeaser(){
+    interactionLocked = true;
+    yesBtn.style.pointerEvents = 'none';
+    noBtn.style.pointerEvents = 'none';
+
+    swapQuestionText('Beneran nih? 😳', function(){
+      setTimeout(function(){
+        swapQuestionText(ORIGINAL_QUESTION, function(){
+          interactionLocked = false;
+          yesBtn.style.pointerEvents = '';
+          noBtn.style.pointerEvents = '';
+        });
+      }, 1500);
+    });
+  }
+
+  function spawnHeartsWave(count){
+    var emojis = ['❤️','💕','💖','💗','💞'];
+    var slotWidth = 100 / count;
+    for (var i = 0; i < count; i++){
+      (function(i){
+        var jitter = Math.random() * slotWidth;
+        var leftPos = (i * slotWidth) + jitter;
+        var delay = Math.random() * 2200;
+        setTimeout(function(){
+          var piece = document.createElement('div');
+          piece.className = 'heart-piece';
+          piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          var size = 12 + Math.random() * 14;
+          piece.style.fontSize = size + 'px';
+          piece.style.left = leftPos + 'vw';
+          var duration = 4.5 + Math.random() * 2.5;
+          piece.style.animationDuration = duration + 's';
+          var drift = (Math.random() * 70 - 35) + 'px';
+          var spin = (Math.random() * 240 - 120) + 'deg';
+          piece.style.setProperty('--drift', drift);
+          piece.style.setProperty('--spin', spin);
+          heartsLayer.appendChild(piece);
+          setTimeout(function(){
+            if (piece.parentNode) piece.parentNode.removeChild(piece);
+          }, duration * 1000 + 300);
+        }, delay);
+      })(i);
+    }
+  }
+
+  function playPhotosSequence(){
+    var photos = scrapbook.querySelectorAll('.polaroid');
+    photos.forEach(function(p){
+      p.classList.remove('play');
+      void p.offsetWidth;
+      p.classList.add('play');
+    });
+  }
+
+  function showEnding(){
+    questionScreen.classList.add('hidden');
+    yesOverlay.classList.remove('active');
+    successScreen.classList.remove('hidden');
+
+    playPhotosSequence();
+
+    // confetti dimulai setelah scene + foto mulai muncul, bukan bersamaan
+    setTimeout(function(){ spawnHeartsWave(22); }, 500);
+    setTimeout(function(){ spawnHeartsWave(16); }, 2700);
+  }
+
+  function handleYesClick(){
+    if (interactionLocked) return;
+    if (noClicks === 0 && !firstYesTeaserShown) {
+      firstYesTeaserShown = true;
+      showFirstYesTeaser();
+      return;
+    }
+    showEnding();
+  }
+
+  function openLightbox(src){
+    lightboxImg.src = src;
+    lightbox.classList.add('active');
+  }
+  function closeLightbox(){
+    lightbox.classList.remove('active');
+  }
+
+  scrapbook.querySelectorAll('.polaroid').forEach(function(card){
+    card.addEventListener('click', function(){
+      openLightbox(card.getAttribute('data-full'));
+    });
+  });
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', function(e){
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  noBtn.addEventListener('click', handleNoClick);
+  yesBtn.addEventListener('click', handleYesClick);
+  yesOverlayBtn.addEventListener('click', showEnding);
+})();
+</script>
+
+</body>
+</html>
